@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.calculator'
+    namespace 'com.mehrzad.calculator'
     compileSdk 35
 
     defaultConfig {
