@@ -1,6 +1,5 @@
 package com.example.calculator;
 
-import com.mehrzad.calculator.R;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebSettings;
