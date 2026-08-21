@@ -1,0 +1,9 @@
+{
+  "name": "ماشین حساب",
+  "version": "1.0.0",
+  "build": 1,
+  "id": "com.calculator.simple",
+  "fullscreen": false,
+  "orientation": "portrait",
+  "plugins": []
+}
