@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>ماشین حساب</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --bg1: #667eea;
+    --bg2: #764ba2;
+    --panel: rgba(255,255,255,.18);
+    --display: rgba(0,0,0,.25);
+    --text: #ffffff;
+}
+
+body.dark {
+    --bg1: #080824;
+    --bg2: #260044;
+    --panel: rgba(20,20,35,.72);
+    --display: rgba(0,0,0,.45);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Tahoma, sans-serif;
+    background: linear-gradient(135deg,var(--bg1),var(--bg2));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background .4s ease;
+    overflow: hidden;
+}
+
+.calculator {
+    width: min(94vw,430px);
+    padding: 18px;
+    border-radius: 30px;
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 20px 50px rgba(0,0,0,.3);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.title {
+    color: var(--text);
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.theme {
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    color: white;
+    font-size: 23px;
+}
+
+.display {
+    height: 145px;
+    padding: 18px;
+    margin-bottom: 16px;
+    border-radius: 24px;
+    background: var(--display);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+}
+
+.expression {
+    min-height: 30px;
+    color: rgba(255,255,255,.7);
+    font-size: 19px;
+    direction: ltr;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.result {
+    margin-top: 5px;
+    font-size: 44px;
+    font-weight: bold;
+    direction: ltr;
+    text-align: right;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 11px;
+}
+
+.calc {
+    height: 69px;
+    border: 0;
+    border-radius: 21px;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+    box-shadow: 0 6px 12px rgba(0,0,0,.2);
+    transition: transform .08s, filter .15s;
+}
+
+.calc:active {
+    transform: scale(.91);
+    filter: brightness(1.25);
+}
+
+.number {
+    background: linear-gradient(145deg,#3949ab,#5c6bc0);
+}
+
+.operator {
+    background: linear-gradient(145deg,#ff7043,#ff4081);
+}
+
+.special {
+    background: linear-gradient(145deg,#009688,#00bcd4);
+}
+
+.equal {
+    background: linear-gradient(145deg,#7b1fa2,#e040fb);
+}
+
+.zero {
+    grid-column: span 2;
+}
+
+@media(max-width:360px) {
+    .calculator {
+        padding: 14px;
+    }
+
+    .calc {
+        height: 61px;
+        font-size: 22px;
+    }
+
+    .display {
+        height: 125px;
+    }
+
+    .result {
+        font-size: 36px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+    <div class="header">
+        <div class="title">ماشین حساب</div>
+        <button class="theme" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="display">
+        <div class="expression" id="expression"></div>
+        <div class="result" id="result">0</div>
+    </div>
+
+    <div class="buttons">
+
+        <button class="calc special" onclick="clearAll()">AC</button>
+        <button class="calc special" onclick="backspace()">⌫</button>
+        <button class="calc special" onclick="percent()">%</button>
+        <button class="calc operator" onclick="chooseOperator('÷')">÷</button>
+
+        <button class="calc number" onclick="number('7')">7</button>
+        <button class="calc number" onclick="number('8')">8</button>
+        <button class="calc number" onclick="number('9')">9</button>
+        <button class="calc operator" onclick="chooseOperator('×')">×</button>
+
+        <button class="calc number" onclick="number('4')">4</button>
+        <button class="calc number" onclick="number('5')">5</button>
+        <button class="calc number" onclick="number('6')">6</button>
+        <button class="calc operator" onclick="chooseOperator('−')">−</button>
+
+        <button class="calc number" onclick="number('1')">1</button>
+        <button class="calc number" onclick="number('2')">2</button>
+        <button class="calc number" onclick="number('3')">3</button>
+        <button class="calc operator" onclick="chooseOperator('+')">+</button>
+
+        <button class="calc number zero" onclick="number('0')">0</button>
+        <button class="calc number" onclick="decimal()">.</button>
+        <button class="calc equal" onclick="calculate()">=</button>
+
+    </div>
+</div>
+
+<script>
+
+let current = "0";
+let previous = null;
+let operator = null;
+let resetScreen = false;
+
+const result = document.getElementById("result");
+const expression = document.getElementById("expression");
+
+function updateDisplay() {
+    result.textContent = current;
+}
+
+function number(value) {
+
+    if (current === "خطا" || resetScreen) {
+        current = value;
+        resetScreen = false;
+    }
+    else if (current === "0") {
+        current = value;
+    }
+    else {
+        current += value;
+    }
+
+    updateDisplay();
+}
+
+function decimal() {
+
+    if (current === "خطا" || resetScreen) {
+        current = "0.";
+        resetScreen = false;
+    }
+    else if (!current.includes(".")) {
+        current += ".";
+    }
+
+    updateDisplay();
+}
+
+function chooseOperator(op) {
+
+    if (current === "خطا") {
+        clearAll();
+        return;
+    }
+
+    if (operator !== null && !resetScreen) {
+        calculate();
+    }
+
+    previous = parseFloat(current);
+    operator = op;
+    resetScreen = true;
+
+    expression.textContent =
+        formatNumber(previous) + " " + op;
+}
+
+function calculate() {
+
+    if (operator === null || previous === null)
+        return;
+
+    const currentNumber = parseFloat(current);
+    let answer;
+
+    switch(operator) {
+
+        case "+":
+            answer = previous + currentNumber;
+            break;
+
+        case "−":
+            answer = previous - currentNumber;
+            break;
+
+        case "×":
+            answer = previous * currentNumber;
+            break;
+
+        case "÷":
+
+            if (currentNumber === 0) {
+                current = "خطا";
+                expression.textContent = "تقسیم بر صفر";
+                operator = null;
+                previous = null;
+                updateDisplay();
+                return;
+            }
+
+            answer = previous / currentNumber;
+            break;
+    }
+
+    expression.textContent =
+        formatNumber(previous) + " " +
+        operator + " " +
+        formatNumber(currentNumber) + " =";
+
+    current = formatNumber(answer);
+
+    previous = null;
+    operator = null;
+    resetScreen = true;
+
+    updateDisplay();
+}
+
+function clearAll() {
+
+    current = "0";
+    previous = null;
+    operator = null;
+    resetScreen = false;
+
+    expression.textContent = "";
+
+    updateDisplay();
+}
+
+function backspace() {
+
+    if (current === "خطا") {
+        clearAll();
+        return;
+    }
+
+    if (current.length <= 1) {
+        current = "0";
+    }
+    else {
+        current = current.slice(0,-1);
+    }
+
+    updateDisplay();
+}
+
+function percent() {
+
+    const value = parseFloat(current);
+
+    if (isNaN(value))
+        return;
+
+    current = formatNumber(value / 100);
+
+    updateDisplay();
+}
+
+function formatNumber(value) {
+
+    if (!isFinite(value))
+        return "خطا";
+
+    return String(Number(value.toFixed(10)));
+}
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const button = document.querySelector(".theme");
+
+    button.textContent =
+        document.body.classList.contains("dark")
+        ? "☀️"
+        : "🌙";
+}
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key >= "0" && e.key <= "9")
+        number(e.key);
+
+    else if (e.key === ".")
+        decimal();
+
+    else if (e.key === "+")
+        chooseOperator("+");
+
+    else if (e.key === "-")
+        chooseOperator("−");
+
+    else if (e.key === "*")
+        chooseOperator("×");
+
+    else if (e.key === "/")
+        chooseOperator("÷");
+
+    else if (e.key === "Enter" || e.key === "=")
+        calculate();
+
+    else if (e.key === "Backspace")
+        backspace();
+
+    else if (e.key === "Escape")
+        clearAll();
+
+});
+
+</script>
+
+</body>
+</html>
