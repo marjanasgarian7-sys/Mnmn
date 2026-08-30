@@ -1,12 +1,12 @@
 {
-  "name": "ماشین حساب",
-  "short_name": "ماشین حساب",
-  "description": "ماشین حساب ساده و زیبا برای اندروید",
+  "name": "حوصلم سر رفت",
+  "short_name": "حوصلم سر رفت",
+  "description": "یک برنامه سرگرم‌کننده پر از مینی‌گیم، مطالب طنز، علمی، عجیب، ضرب‌المثل و معما",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#172554",
+  "theme_color": "#4f46e5",
   "lang": "fa",
   "dir": "rtl"
 }
