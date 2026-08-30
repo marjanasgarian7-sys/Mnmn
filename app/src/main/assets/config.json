@@ -1,8 +1,8 @@
 {
-  "name": "ماشین حساب",
+  "name": "حوصلم سر رفت",
   "version": "1.0.0",
   "build": 1,
-  "id": "com.calculator.simple",
+  "id": "com.hoselamsarraft.app",
   "fullscreen": false,
   "orientation": "portrait",
   "plugins": []
