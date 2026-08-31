@@ -9,7 +9,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name="com.example.calculator.MainActivity"
+            android:name="com.hoselamsarraft.app.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
 
