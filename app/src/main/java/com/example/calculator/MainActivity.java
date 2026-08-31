@@ -1,6 +1,6 @@
 package com.hoselamsarraft.app;
 
-import com.mehrzad.calculator.R;
+import com.hoselamsarraft.app.R;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebSettings;
