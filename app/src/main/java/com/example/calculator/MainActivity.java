@@ -1,4 +1,4 @@
-package com.example.calculator;
+package com.hoselamsarraft.app;
 
 import com.mehrzad.calculator.R;
 import android.annotation.SuppressLint;
